@@ -11,13 +11,14 @@ CREATE TABLE puestos(
 	id_puesto int IDENTITY(1,1),
 	nombre varchar(35),
 	oficina	varchar(35),
-	área varchar(35)
+	area varchar(35)
 )
 
 CREATE TABLE compensaciones(
 	id_compensacion	int IDENTITY(1,1),
 	nombre_comp	varchar(35),
-	concepto varchar(35)
+	concepto varchar(35),
+	importe int
 )
 
 CREATE TABLE empleados(
