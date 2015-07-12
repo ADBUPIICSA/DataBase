@@ -94,15 +94,16 @@ CREATE PROCEDURE proc_nuevo_empleado(
 GO
 --READ
 CREATE PROCEDURE proc_seleccionar_empleado(
-		@nombre varchar(35) = NULL
+		@aPaterno varchar(35) = NULL
 	)
 	AS
-	IF @nombre is null
+	IF @aPaterno is null
 		BEGIN
-			SELECT * FROM empleados ORDER BY 
+			SELECT * FROM empleados ORDER BY num_empleado
 		END
 	ELSE
 		BEGIN
+			SELECT * FROM empleados WHERE aPaterno = @aPaterno
 		END
 	
 GO

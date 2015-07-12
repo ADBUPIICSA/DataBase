@@ -30,6 +30,7 @@ CREATE TABLE empleados(
 	direccion	varchar (75),
 	email	varchar(30),
 	salario	int,
+	fecha_ingreso datetime,
 	id_puesto int
 )
 
