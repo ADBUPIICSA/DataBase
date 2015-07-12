@@ -70,8 +70,8 @@ CREATE TABLE entrevista(
 	id_aspirante	int not null,
 	id_puesto	int not null,
 	fecha datetime,
-	num_empleado	int,
-	resltado bit,
+	entrevistador	int,
+	resultado bit,
 )
 
 CREATE TABLE proveedores(
@@ -191,6 +191,7 @@ ALTER TABLE pago ADD FOREIGN KEY (num_empleado) REFERENCES empleados(num_emplead
 
 ALTER TABLE entrevista ADD FOREIGN KEY (id_aspirante) REFERENCES aspirante(id_aspirante)
 ALTER TABLE entrevista ADD FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto)
+ALTER TABLE entrevista ADD FOREIGN KEY (entrevistador) REFERENCES empleados(num_empleado)
 
 ALTER TABLE compra ADD FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 ALTER TABLE compra ADD FOREIGN KEY (autoriza_compra) REFERENCES empleados(num_empleado)
