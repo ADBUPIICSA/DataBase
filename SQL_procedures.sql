@@ -113,17 +113,21 @@ GO
 --CREATE
 CREATE PROCEDURE proc_nuevo_empleado(
 		@nombre	varchar(35),
-		@aPaterno	varchar(35),
-		@aMaterno	varchar(35),
+		@aPaterno varchar(35),
+		@aMaterno varchar(35),
+		@fnacimiento datetime,
 		@telefono varchar(35),
 		@direccion	varchar (75),
 		@email	varchar(30),
+		@rfc	varchar(35),
+		@curp varchar(35),
 		@salario	int,
 		@fecha_ingreso datetime,
 		@id_puesto int
 	)
 	AS
-	INSERT INTO empleados VALUES (@nombre, @aPaterno, @aMaterno, @telefono, @direccion, @email, @salario, @fecha_ingreso, @id_puesto)
+	INSERT INTO empleados VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, 
+									@direccion, @email, @rfc, @curp, @salario, @fecha_ingreso, @id_puesto)
 GO
 --READ
 CREATE PROCEDURE proc_seleccionar_empleado(
@@ -292,7 +296,7 @@ CREATE PROCEDURE proc_reaizar_pago(
 GO
 --SELECT
 CREATE PROCEDURE proc_select_pago(
-		@num_empleado int
+		@num_empleado int = null
 	)
 	AS
 	IF @num_empleado IS NULL
@@ -305,7 +309,37 @@ CREATE PROCEDURE proc_select_pago(
 		END
 GO
 
-proc_reaizar_pago 1
+--PROCEDIMIENTOS DE LA TABLA ASPIRANTE
+--CREATE
+CREATE PROCEDURE proc_nuevo_aspirante(
+		@nombre	varchar(35),
+		@aPaterno varchar(35),
+		@aMaterno varchar(35),
+		@fnacimiento datetime,
+		@telefono varchar(35),
+		@direccion	varchar (75),
+		@email	varchar(30),
+		@rfc	varchar(35),
+		@curp varchar(35)
+	)
+	AS
+	INSERT aspirante VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, @direccion, @email, @rfc, @curp)
+GO
+--SELECT
+CREATE PROCEDURE proc_select_aspirantes(
+		@id_aspirante int = null
+	)
+	AS
+	IF @id_aspirante IS NULL
+		BEGIN
+			SELECT * FROM aspirante ORDER BY id_aspirante DESC
+		END
+	ELSE
+		BEGIN
+			SELECT * FROM aspirante WHERE id_aspirante = @id_aspirante ORDER BY id_aspirante DESC
+		END
+GO
+
 
 
 
