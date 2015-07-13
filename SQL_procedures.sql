@@ -80,11 +80,11 @@ GO
 CREATE PROCEDURE proc_nueva_capacitacion(
 		@nombre_cap varchar(35),
 		@tipo	varchar(35),
-		@duraciÛn	int,
+		@duraci√≥n	int,
 		@id_compensacion int = null
 	)
 	AS
-	INSERT INTO capacitaciones VALUES (@nombre_cap, @tipo, @duraciÛn, @id_compensacion)
+	INSERT INTO capacitaciones VALUES (@nombre_cap, @tipo, @duraci√≥n, @id_compensacion)
 GO
 --READ
 CREATE PROCEDURE proc_seleccionar_capacitacion(
@@ -145,7 +145,7 @@ CREATE PROCEDURE proc_seleccionar_empleado(
 	
 GO
 --UPDATE
---CREO QUE LO MEJOR SERÕA PROGRAMAR ESTA ACTUALIZACI”N EN EL SSTEMA Y NO EN UN PROCEDURE
+--CREO QUE LO MEJOR SER√çA PROGRAMAR ESTA ACTUALIZACI√ìN EN EL SSTEMA Y NO EN UN PROCEDURE
 --CREATE PROCEDURE proc_editar_empleado(
 --		@num_empleado int,
 --		@campo varchar(35),
@@ -411,7 +411,7 @@ CREATE PROCEDURE proc_nueva_entrevista(
 		@resultado bit
 	)
 	AS
-	INSERT aspirante VALUES (@id_aspirante, @fecha, @entrevistador, @resultado)
+	INSERT entrevista VALUES (@id_aspirante, @fecha, @entrevistador, @resultado)
 GO
 --SELECT
 CREATE PROCEDURE proc_select_entrevista(
@@ -465,40 +465,49 @@ CREATE PROCEDURE proc_eliminar_entrevista(
 
 	
 GO
---CONTRATAR
-CREATE PROCEDURE proc_contratar_aspirante(
-		@id_aspirante int,
-		@id_puesto int,
-		@salario	int,
-
-		@nombre	varchar(35) = null,
-		@aPaterno varchar(35) = null,
-		@aMaterno varchar(35) = null,
-		@fnacimiento datetime = null,
-		@telefono varchar(35) = null,
-		@direccion	varchar (75) = null,
-		@email	varchar(30) = null,
-		@rfc	varchar(35) = null,
-		@curp varchar(35) = null,
-		@fecha_ingreso datetime = null
+--PROCEDIMIENTOS DE LA TABLA PROVEEDORES
+--CREATE
+CREATE PROCEDURE proc_nuevo_proveedor(
+		@nombre	varchar(35),
+		@aPaterno	varchar(35),
+		@aMaterno	varchar(35),
+		@telefono varchar(35),
+		@direccion	varchar (75),
+		@email	varchar(30)
 	)
 	AS
-	SET @nombre = (SELECT nombre FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @aPaterno = (SELECT aPaterno FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @aMaterno = (SELECT aMaterno FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @fnacimiento = (SELECT fnacimiento FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @telefono = (SELECT telefono FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @direccion = (SELECT direccion FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @email = (SELECT telefono FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @rfc = (SELECT rfc FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @curp = (SELECT curp FROM aspirante WHERE id_aspirante = @id_aspirante)
-	SET @fecha_ingreso = GETDATE()
-
-	INSERT INTO empleados VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, 
-									@direccion, @email, @rfc, @curp, @salario, @fecha_ingreso, @id_puesto)
-									
-	DELETE FROM aspirante WHERE id_aspirante = @id_aspirante	
+	INSERT proveedor VALUES (@nombre, @aPaterno, @aMaterno, @telefono, @direccion, @email)
 GO
+--SELECT
+CREATE PROCEDURE proc_select_proveedor(
+		@id_proveedor int = null,
+		@nombre varchar(35)
+	)
+	AS
+	IF @id_proveedor IS NULL AND @nombre IS NULL
+		BEGIN
+			SELECT * FROM proveedor ORDER BY id_proveedor ASC
+		END
+	ELSE IF @id_proveedor IS NULL
+		BEGIN
+			SELECT * FROM proveedor WHERE nombre = @nombre ORDER BY id_proveedor ASC
+		END
+	ELSE IF @nombre IS NULL
+		BEGIN
+			SELECT * FROM proveedor WHERE id_proveedor = @id_proveedor ORDER BY id_proveedor ASC
+		END
+	ELSE 
+		BEGIN
+			SELECT * FROM proveedor WHERE id_proveedor = @id_proveedor AND nombre = @nombre 
+			ORDER BY id_proveedor ASC
+		END
+GO
+--DELETE
+CREATE PROCEDURE proc_eliminar_proveedor(
+		@id_proveedor int	
+	)
+	AS
+	DELETE FROM proveedor WHERE id_proveedor = @id_proveedor
 
-
-USE E_13_05_2015
+	
+GO
