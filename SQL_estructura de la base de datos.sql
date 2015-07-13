@@ -82,7 +82,7 @@ CREATE TABLE entrevista(
 	id_aspirante	int not null,
 	fecha datetime,
 	entrevistador	int,
-	resultado bit,
+	resultado bit
 )
 
 CREATE TABLE proveedores(

@@ -402,5 +402,103 @@ CREATE PROCEDURE proc_contratar_aspirante(
 GO
 
 
+--PROCEDIMIENTOS DE LA TABLA ENTREVISTA
+--CREATE
+CREATE PROCEDURE proc_nueva_entrevista(
+		@id_aspirante int,
+		@fecha datetime,
+		@entrevistador	int,
+		@resultado bit
+	)
+	AS
+	INSERT aspirante VALUES (@id_aspirante, @fecha, @entrevistador, @resultado)
+GO
+--SELECT
+CREATE PROCEDURE proc_select_entrevista(
+		@id_entrevista int = null,
+		@id_aspirante int = null,
+		@fechaInicio datetime,
+		@fechaFin datetime 
+	)
+	AS
+	IF @id_aspirante IS NOT NULL AND @id_entrevista IS NOT NULL AND @fechaInicio IS NOT NULL AND @fechaFin IS NOT NULL
+		BEGIN
+			SELECT * 
+			FROM entrevista 
+			WHERE fecha >= @fechaInicio 
+				AND fecha < DATEADD(DAY,1,@fechaFin)
+				AND id_entrevista = @id_entrevista
+				AND id_aspirante = @id_aspirante
+			ORDER BY fecha ASC
+		END
+	ELSE IF @id_aspirante IS NULL AND @id_entrevista IS NULL
+		BEGIN
+			SELECT * FROM entrevista WHERE fecha >= @fechaInicio AND fecha < DATEADD(DAY,1,@fechaFin) ORDER BY fecha ASC
+		END
+	ELSE IF @id_aspirante IS NULL AND @fechaInicio IS NULL 
+		BEGIN
+			SELECT * FROM entrevista WHERE id_entrevista = @id_entrevista ORDER BY id_entrevista DESC
+		END
+	ELSE IF @id_entrevista IS NULL AND @fechaInicio IS NULL 
+		BEGIN
+			SELECT * FROM entrevista WHERE id_aspirante = @id_aspirante ORDER BY id_aspirante DESC
+		END
+	ELSE
+		BEGIN
+			SELECT * FROM entrevista ORDER BY id_entrevista ASC
+		END
+GO
+--DELETE
+CREATE PROCEDURE proc_eliminar_entrevista(
+		@id_entrevista int = null,
+		@id_aspirante	int = null 
+	)
+	AS
+	IF @id_entrevista IS NULL
+		BEGIN
+			DELETE FROM entrevista WHERE id_aspirante = @id_aspirante
+		END
+	ELSE IF @id_aspirante IS NULL
+		BEGIN
+			DELETE FROM entrevista WHERE id_entrevista = @id_entrevista
+		END
+
+	
+GO
+--CONTRATAR
+CREATE PROCEDURE proc_contratar_aspirante(
+		@id_aspirante int,
+		@id_puesto int,
+		@salario	int,
+
+		@nombre	varchar(35) = null,
+		@aPaterno varchar(35) = null,
+		@aMaterno varchar(35) = null,
+		@fnacimiento datetime = null,
+		@telefono varchar(35) = null,
+		@direccion	varchar (75) = null,
+		@email	varchar(30) = null,
+		@rfc	varchar(35) = null,
+		@curp varchar(35) = null,
+		@fecha_ingreso datetime = null
+	)
+	AS
+	SET @nombre = (SELECT nombre FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @aPaterno = (SELECT aPaterno FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @aMaterno = (SELECT aMaterno FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @fnacimiento = (SELECT fnacimiento FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @telefono = (SELECT telefono FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @direccion = (SELECT direccion FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @email = (SELECT telefono FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @rfc = (SELECT rfc FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @curp = (SELECT curp FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @fecha_ingreso = GETDATE()
+
+	INSERT INTO empleados VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, 
+									@direccion, @email, @rfc, @curp, @salario, @fecha_ingreso, @id_puesto)
+									
+	DELETE FROM aspirante WHERE id_aspirante = @id_aspirante	
+GO
+
 
 USE E_13_05_2015
