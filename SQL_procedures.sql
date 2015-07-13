@@ -320,26 +320,86 @@ CREATE PROCEDURE proc_nuevo_aspirante(
 		@direccion	varchar (75),
 		@email	varchar(30),
 		@rfc	varchar(35),
-		@curp varchar(35)
+		@curp varchar(35),
+		@puesto varchar(35)
 	)
 	AS
-	INSERT aspirante VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, @direccion, @email, @rfc, @curp)
+	INSERT aspirante VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, @direccion, @email, @rfc, @curp, @puesto)
 GO
 --SELECT
 CREATE PROCEDURE proc_select_aspirantes(
-		@id_aspirante int = null
+		@id_aspirante int = null,
+		@id_puesto int
 	)
 	AS
-	IF @id_aspirante IS NULL
+	IF @id_aspirante IS NULL AND @id_puesto IS NULL
 		BEGIN
 			SELECT * FROM aspirante ORDER BY id_aspirante DESC
 		END
-	ELSE
+	ELSE IF @id_aspirante IS NULL
+		BEGIN
+			SELECT * FROM aspirante WHERE id_puesto = @id_puesto ORDER BY id_aspirante DESC
+		END
+	ELSE IF @id_puesto IS NULL
 		BEGIN
 			SELECT * FROM aspirante WHERE id_aspirante = @id_aspirante ORDER BY id_aspirante DESC
 		END
+	ELSE
+		BEGIN
+			SELECT * FROM aspirante WHERE id_aspirante = @id_aspirante AND id_puesto = @id_puesto ORDER BY id_aspirante DESC
+		END
 GO
+--DELETE
+CREATE PROCEDURE proc_eliminar_aspirante(
+		@id_aspirante int = NULL, 
+		@id_puesto int = NULL
+	)
+	AS
+	IF @id_puesto IS NULL
+		BEGIN
+			DELETE FROM aspirante WHERE id_aspirante = @id_aspirante
+		END
+	ELSE IF @id_puesto IS NULL
+		BEGIN
+			DELETE FROM aspirante WHERE id_puesto = @id_puesto
+		END
 
+	
+GO
+--CONTRATAR
+CREATE PROCEDURE proc_contratar_aspirante(
+		@id_aspirante int,
+		@id_puesto int,
+		@salario	int,
+
+		@nombre	varchar(35) = null,
+		@aPaterno varchar(35) = null,
+		@aMaterno varchar(35) = null,
+		@fnacimiento datetime = null,
+		@telefono varchar(35) = null,
+		@direccion	varchar (75) = null,
+		@email	varchar(30) = null,
+		@rfc	varchar(35) = null,
+		@curp varchar(35) = null,
+		@fecha_ingreso datetime = null
+	)
+	AS
+	SET @nombre = (SELECT nombre FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @aPaterno = (SELECT aPaterno FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @aMaterno = (SELECT aMaterno FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @fnacimiento = (SELECT fnacimiento FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @telefono = (SELECT telefono FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @direccion = (SELECT direccion FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @email = (SELECT telefono FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @rfc = (SELECT rfc FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @curp = (SELECT curp FROM aspirante WHERE id_aspirante = @id_aspirante)
+	SET @fecha_ingreso = GETDATE()
+
+	INSERT INTO empleados VALUES (@nombre, @aPaterno, @aMaterno, @fnacimiento, @telefono, 
+									@direccion, @email, @rfc, @curp, @salario, @fecha_ingreso, @id_puesto)
+									
+	DELETE FROM aspirante WHERE id_aspirante = @id_aspirante	
+GO
 
 
 

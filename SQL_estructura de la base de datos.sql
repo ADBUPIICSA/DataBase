@@ -24,11 +24,14 @@ CREATE TABLE compensaciones(
 CREATE TABLE empleados(
 	num_empleado int IDENTITY(1,1),
 	nombre	varchar(35),
-	aPaterno	varchar(35),
-	aMaterno	varchar(35),
+	aPaterno varchar(35),
+	aMaterno varchar(35),
+	fnacimiento datetime,
 	telefono varchar(35),
 	direccion	varchar (75),
 	email	varchar(30),
+	rfc	varchar(35),
+	curp varchar(35),
 	salario	int,
 	fecha_ingreso datetime,
 	id_puesto int
@@ -63,15 +66,20 @@ CREATE TABLE pago(
 CREATE TABLE aspirante(
 	id_aspirante int identity(1,1), 
 	nombre	varchar(35),
-	edad int,
+	aPaterno varchar(35),
+	aMaterno varchar(35),
+	fnacimiento datetime,
 	telefono varchar(35),
+	direccion	varchar (75),
+	email	varchar(30),
 	rfc	varchar(35),
-	curp varchar(35)
+	curp varchar(35),
+	id_puesto	int not null
 )
 
 CREATE TABLE entrevista(
+	id_entrevista int identity(1,1),
 	id_aspirante	int not null,
-	id_puesto	int not null,
 	fecha datetime,
 	entrevistador	int,
 	resultado bit,
@@ -169,7 +177,7 @@ ALTER TABLE capacita_empleado ADD PRIMARY KEY (num_empleado, id_capacitacion)
 ALTER TABLE compensa_empleado ADD PRIMARY KEY (num_empleado, id_compensacion)
 ALTER TABLE pago ADD PRIMARY KEY (id_pago)
 ALTER TABLE aspirante ADD PRIMARY KEY (id_aspirante)
-ALTER TABLE entrevista ADD PRIMARY KEY (id_aspirante, id_puesto)
+ALTER TABLE entrevista ADD PRIMARY KEY (id_entrevista)
 ALTER TABLE proveedores ADD PRIMARY KEY (id_proveedor)
 ALTER TABLE clientes ADD PRIMARY KEY (id_cliente)
 ALTER TABLE mat_prima ADD PRIMARY KEY (id_mat_prima)
@@ -192,8 +200,9 @@ ALTER TABLE compensa_empleado ADD FOREIGN KEY (id_compensacion) REFERENCES compe
 
 ALTER TABLE pago ADD FOREIGN KEY (num_empleado) REFERENCES empleados(num_empleado)
 
+ALTER TABLE aspirante ADD FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto)
+
 ALTER TABLE entrevista ADD FOREIGN KEY (id_aspirante) REFERENCES aspirante(id_aspirante)
-ALTER TABLE entrevista ADD FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto)
 ALTER TABLE entrevista ADD FOREIGN KEY (entrevistador) REFERENCES empleados(num_empleado)
 
 ALTER TABLE compra ADD FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
