@@ -37,14 +37,15 @@ CREATE TABLE empleados(
 CREATE TABLE capacitaciones(
 	id_capacitacion	int identity(1,1),
 	nombre_cap varchar(35),
-	Tipo	varchar(35),
-	Duración	int,
+	tipo	varchar(35),
+	duracion	int,
 	id_compensacion int
 )
 
 CREATE TABLE capacita_empleado(
 	num_empleado int NOT NULL,
-	id_capacitacion int NOT NULL
+	id_capacitacion int NOT NULL,
+	fecha datetime
 )
 
 CREATE TABLE compensa_empleado(

@@ -55,12 +55,12 @@ CREATE PROCEDURE proc_seleccionar_compensacion(
 		END
 	ELSE
 		BEGIN
-			SELECT * FROM compensaciones WHERE nombre_comp = @nombre_comp ORDER BY nombre_comp ASC
+			SELECT * FROM compensaciones WHERE nombre_comp LIKE '%'+@nombre_comp+'%' ORDER BY nombre_comp ASC
 		END
 	
 GO
 --UPDATE
-CREATE PROCEDURE proc_editar_capacitacion(
+CREATE PROCEDURE proc_editar_compensacion(
 		@id_compensacion int,
 		@importe int
 	)
@@ -68,11 +68,45 @@ CREATE PROCEDURE proc_editar_capacitacion(
 	UPDATE compensaciones SET importe = @importe WHERE id_compensacion = @id_compensacion
 GO
 --DELETE
-CREATE PROCEDURE proc_eliminar_capacitacion(
+CREATE PROCEDURE proc_eliminar_compensacion(
 		@id_compensacion int
 	)
 	AS
 	DELETE FROM compensaciones WHERE id_compensacion = @id_compensacion
+GO
+
+--PROCEDIMIENTOS DE LA TABLA CAPACITACION
+--CREATE
+CREATE PROCEDURE proc_nueva_capacitacion(
+		@nombre_cap varchar(35),
+		@tipo	varchar(35),
+		@duración	int,
+		@id_compensacion int = null
+	)
+	AS
+	INSERT INTO capacitaciones VALUES (@nombre_cap, @tipo, @duración, @id_compensacion)
+GO
+--READ
+CREATE PROCEDURE proc_seleccionar_capacitacion(
+		@nombre_cap varchar(35) = NULL
+	)
+	AS
+	IF @nombre_cap IS NULL
+		BEGIN
+			SELECT * FROM capacitaciones ORDER BY id_capacitacion
+		END
+	ELSE
+		BEGIN
+			SELECT * FROM capacitaciones WHERE nombre_cap = @nombre_cap ORDER BY nombre_cap ASC
+		END
+	
+GO
+--DELETE
+CREATE PROCEDURE proc_eliminar_capacitacion(
+		@id_capacitacion int
+	)
+	AS
+	DELETE FROM capacitaciones WHERE id_capacitacion = @id_capacitacion
 GO
 
 --PROCEDIMIENTOS DE LA TABLA EMPLEADOS
@@ -116,7 +150,6 @@ GO
 --	AS
 --	UPDATE empleados SET @campo = @valor WHERE num_empleado = @num_empleado
 --GO
-
 --DELETE
 CREATE PROCEDURE proc_eliminar_empleado(
 		@num_empleado int
@@ -125,6 +158,55 @@ CREATE PROCEDURE proc_eliminar_empleado(
 	DELETE FROM empleados WHERE num_empleado = @num_empleado
 GO
 
+--PROCEDIMIENTOS DE LA TABLA CAPACITA_EMPLEADO
+--CREATE
+CREATE PROCEDURE proc_asignar_capacitacion_empleado(
+		@num_empleado int,
+		@id_capacitacion int,
+		@fecha datetime
+	)
+	AS
+	INSERT capacita_empleado VALUES (@num_empleado, @id_capacitacion, @fecha)
+GO
+--SELECT
+CREATE VIEW capacitaciones_asignadas_empleados AS
+SELECT A.id_capacitacion, A.num_empleado, A.fecha, nombre_cap AS capacitacion, nombre, aPaterno, aMaterno
+FROM capacita_empleado A 
+	INNER JOIN capacitaciones B
+		ON A.id_capacitacion = B.id_capacitacion
+	INNER JOIN empleados C
+		ON A.num_empleado = C.num_empleado
+GO
+CREATE PROCEDURE proc_select_capacitacion_empleado(
+		@num_empleado int = null,
+		@id_capacitacion int = null
+	)
+	AS
+	IF @num_empleado IS NULL AND @id_capacitacion IS NULL
+		BEGIN
+			SELECT * FROM capacita_empleado ORDER BY num_empleado
+		END
+	ELSE IF @num_empleado IS NULL
+		BEGIN
+			SELECT * FROM capacita_empleado WHERE id_capacitacion = @id_capacitacion ORDER BY num_empleado
+		END
+	ELSE IF @id_capacitacion IS NULL
+		BEGIN
+			SELECT * FROM capacita_empleado WHERE num_empleado = @num_empleado ORDER BY num_empleado
+		END
+	ELSE
+		BEGIN
+			SELECT * FROM capacita_empleado WHERE id_capacitacion = @id_capacitacion AND num_empleado = @num_empleado ORDER BY num_empleado
+		END	
+GO
+--DELETE
+CREATE PROCEDURE proc_eliminar_capacitacion_empleado(
+		@num_empleado int,
+		@id_capacitacion int
+	)
+	AS
+	DELETE FROM capacita_empleado WHERE num_empleado = @num_empleado AND id_capacitacion = @id_capacitacion
+GO
 
 
 
