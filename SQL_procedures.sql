@@ -184,19 +184,19 @@ CREATE PROCEDURE proc_select_capacitacion_empleado(
 	AS
 	IF @num_empleado IS NULL AND @id_capacitacion IS NULL
 		BEGIN
-			SELECT * FROM capacita_empleado ORDER BY num_empleado
+			SELECT * FROM capacitaciones_asignadas_empleados ORDER BY num_empleado
 		END
 	ELSE IF @num_empleado IS NULL
 		BEGIN
-			SELECT * FROM capacita_empleado WHERE id_capacitacion = @id_capacitacion ORDER BY num_empleado
+			SELECT * FROM capacitaciones_asignadas_empleados WHERE id_capacitacion = @id_capacitacion ORDER BY num_empleado
 		END
 	ELSE IF @id_capacitacion IS NULL
 		BEGIN
-			SELECT * FROM capacita_empleado WHERE num_empleado = @num_empleado ORDER BY num_empleado
+			SELECT * FROM capacitaciones_asignadas_empleados WHERE num_empleado = @num_empleado ORDER BY num_empleado
 		END
 	ELSE
 		BEGIN
-			SELECT * FROM capacita_empleado WHERE id_capacitacion = @id_capacitacion AND num_empleado = @num_empleado ORDER BY num_empleado
+			SELECT * FROM capacitaciones_asignadas_empleados WHERE id_capacitacion = @id_capacitacion AND num_empleado = @num_empleado ORDER BY num_empleado
 		END	
 GO
 --DELETE
