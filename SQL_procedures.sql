@@ -209,7 +209,86 @@ CREATE PROCEDURE proc_eliminar_capacitacion_empleado(
 GO
 
 
+--PROCEDIMIENTOS DE LA TABLA COMPENSA_EMPLEADO
+--CREATE
+CREATE PROCEDURE proc_asignar_compensacion_empleado(
+		@num_empleado int,
+		@id_compensacion int
+	)
+	AS
+	INSERT compensa_empleado VALUES (@num_empleado, @id_compensacion)
+GO
+--SELECT
+CREATE VIEW compensaciones_asignadas_empleados AS
+SELECT A.id_compensacion, A.num_empleado, nombre_comp AS compensacion, nombre, aPaterno, aMaterno
+FROM compensa_empleado A 
+	INNER JOIN compensaciones B
+		ON A.id_compensacion = B.id_compensacion
+	INNER JOIN empleados C
+		ON A.num_empleado = C.num_empleado
+GO
+CREATE PROCEDURE proc_select_compensacion_empleado(
+		@num_empleado int = null,
+		@id_compensacion int = null
+	)
+	AS
+	IF @num_empleado IS NULL AND @id_compensacion IS NULL
+		BEGIN
+			SELECT * FROM compensaciones_asignadas_empleados ORDER BY num_empleado
+		END
+	ELSE IF @num_empleado IS NULL
+		BEGIN
+			SELECT * FROM compensaciones_asignadas_empleados WHERE id_compensacion = @id_compensacion ORDER BY num_empleado
+		END
+	ELSE IF @id_compensacion IS NULL
+		BEGIN
+			SELECT * FROM compensaciones_asignadas_empleados WHERE num_empleado = @num_empleado ORDER BY num_empleado
+		END
+	ELSE
+		BEGIN
+			SELECT * FROM compensaciones_asignadas_empleados WHERE id_compensacion = @id_compensacion AND num_empleado = @num_empleado ORDER BY num_empleado
+		END	
+GO
+--DELETE
+CREATE PROCEDURE proc_eliminar_compensacion_empleado(
+		@num_empleado int,
+		@id_compensacion int
+	)
+	AS
+	DELETE FROM compensa_empleado WHERE num_empleado = @num_empleado AND id_compensacion = @id_compensacion
+GO
 
+--PROCEDIMIENTOS DE LA TABLA PAGO
+--CREATE
+CREATE VIEW total_compensaciones_empleado AS
+	SELECT C.num_empleado, nombre, aPaterno, aMaterno, SUM(importe) AS total_compensaciones
+	FROM compensa_empleado A
+		INNER JOIN compensaciones B
+			ON A.id_compensacion = B.id_compensacion
+		INNER JOIN empleados C
+			ON A.num_empleado = C.num_empleado
+	GROUP BY C.num_empleado, nombre, aPaterno, aMaterno
+GO
+CREATE PROCEDURE proc_reaizar_pago(
+		@num_empleado	int,
+		@fecha_pago	datetime = null,
+		@total_pago int = null
+	)
+	AS
+	SET @fecha_pago = getdate()
+	SET @total_pago = (
+						(	
+							SELECT salario 
+							FROM empleados 
+							WHERE num_empleado = @num_empleado
+						) +
+						(
+							SELECT  total_compensaciones
+							FROM total_compensaciones_empleado 
+							WHERE num_empleado = @num_empleado
+						)
+					)
+	INSERT pago VALUES (@num_empleado, @fecha_pago, @total_pago)
 
 
 
