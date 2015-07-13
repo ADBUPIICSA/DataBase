@@ -1,4 +1,3 @@
-
 USE ABD_GMODELO
 GO
 
@@ -56,7 +55,7 @@ CREATE PROCEDURE proc_seleccionar_compensacion(
 		END
 	ELSE
 		BEGIN
-			SELECT * FROM compensaciones WHERE nombre_comp = @nombre_comp ORDER BY @nombre_comp ASC
+			SELECT * FROM compensaciones WHERE nombre_comp = @nombre_comp ORDER BY nombre_comp ASC
 		END
 	
 GO
@@ -108,23 +107,22 @@ CREATE PROCEDURE proc_seleccionar_empleado(
 	
 GO
 --UPDATE
-CREATE PROCEDURE proc_editar_empleado(
-		@num_empleado int,
-		@telefono varchar(35),
-		@direccion	varchar (75),
-		@email	varchar(30),
-		@salario	int,
-		@id_puesto int
-	)
-	AS
-	UPDATE compensaciones SET telefono = @telefono WHERE id_compensacion = @id_compensacion
-GO
+--CREO QUE LO MEJOR SERÍA PROGRAMAR ESTA ACTUALIZACIÓN EN EL SSTEMA Y NO EN UN PROCEDURE
+--CREATE PROCEDURE proc_editar_empleado(
+--		@num_empleado int,
+--		@campo varchar(35),
+--		@valor varchar(35)
+--	)
+--	AS
+--	UPDATE empleados SET @campo = @valor WHERE num_empleado = @num_empleado
+--GO
+
 --DELETE
-CREATE PROCEDURE proc_eliminar_capacitacion(
-		@id_compensacion int
+CREATE PROCEDURE proc_eliminar_empleado(
+		@num_empleado int
 	)
 	AS
-	DELETE FROM compensaciones WHERE id_compensacion = @id_compensacion
+	DELETE FROM empleados WHERE num_empleado = @num_empleado
 GO
 
 
