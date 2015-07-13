@@ -289,6 +289,23 @@ CREATE PROCEDURE proc_reaizar_pago(
 						)
 					)
 	INSERT pago VALUES (@num_empleado, @fecha_pago, @total_pago)
+GO
+--SELECT
+CREATE PROCEDURE proc_select_pago(
+		@num_empleado int
+	)
+	AS
+	IF @num_empleado IS NULL
+		BEGIN
+			SELECT * FROM pago ORDER BY fecha_pago DESC
+		END
+	ELSE
+		BEGIN
+			SELECT * FROM pago WHERE num_empleado = @num_empleado ORDER BY fecha_pago DESC
+		END
+GO
+
+proc_reaizar_pago 1
 
 
 
